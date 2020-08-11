@@ -3,4 +3,4 @@
 
 There is a pdf with the presentation of the proyect in the presentation folder. 
 
- In order to run the project locally the Rda tables must be donwloaded and the next packages installed: syuzhet (for the sentiment analysis), rtweet (for downloading the tweets), tm (for text manipulation and cleaning), ggplot2, lubridate, dplyr, tidyr, ggthemes, readxl, readr, wordcloud. 
+ In order to run the project locally the Rda tables must be donwloaded and the next packages should be installed: syuzhet (for the sentiment analysis), rtweet (for downloading the tweets), tm (for text manipulation and cleaning), ggplot2, lubridate, dplyr, tidyr, ggthemes, readxl, readr, wordcloud. 
