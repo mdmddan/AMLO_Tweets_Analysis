@@ -112,7 +112,8 @@ inspect(amlo_corpus_stem[1:5])
 
 head(findFreqTerms(amlo_tdm, lowfreq=10), 40)
 
-#creation of a wordcloud graph for the presentation
+
+#Figure 1: Wordcloud graph for the presentation
 
 wordcloud(amlo_corpus, random.order = FALSE, scale=c(5,.5), max.words=300, colors=brewer.pal(8, "Set1"))
 
@@ -134,5 +135,177 @@ rownames(emocion.df3) <- NULL
 
 #Verification of the dataframe 
 print(emocion.df3)
+
+
+#Figure 2: Count per sentiment in the tweets
+sentimientos1 <- ggplot(emocion.df3[1:8,],
+                        aes(x = sentimiento,
+                            y = cuenta, fill = sentimiento, color = sentimiento)) + 
+  geom_bar(stat = "identity",alpha = .7, size=1) +
+  xlab('Sentiment')+
+  ylab('Count')+
+  geom_text(aes(label = cuenta),
+            vjust = 1.5, color = "black",
+            size = 5) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size=18),
+        legend.position = "none",
+        axis.title = element_text(size = 18)) 
+
+print(sentimientos1)
+
+#Figure 3: Count per sentiment in the tweets
+
+sentimientos2 <- ggplot(emocion.df3[9:10,], 
+                        aes(x = sentimiento,
+                            y = cuenta, fill = sentimiento, color=sentimiento)) + 
+  geom_bar(stat = "identity",alpha = .75, size=1) +
+  xlab('Polarization')+
+  ylab('Count')+
+  geom_text(aes(label = cuenta),
+            vjust = 1.5, color = "black",
+            size = 7) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size=18),
+        legend.position = "none",
+        axis.title = element_text(size = 18))
+print(sentimientos2)
+
+
+
+dates <- base_amlo$date
+amlo_txt_df <- data_frame(dates, amlo_txt)
+
+
+emocion.df2 <- bind_cols(amlo_txt_df, emocion.df)
+emocion.df2 <- emocion.df2 %>% 
+  gather(emotion, value, -dates, -negative, -positive, -amlo_txt) 
+
+emo <- emocion.df2 %>%
+  group_by(dates, emotion) %>%
+  summarise(n = sum(value))
+
+emocion.df18 <- read_excel("emocion.df18.xlsx")
+table(emocion.df18$names)
+emocion.df18$dates <- as.Date(emocion.df18$dates)
+class(emocion.df18)
+
+emocion.df18 <- emocion.df18 %>%
+  mutate(emotion = ifelse(emotion == "expectativa", "anticipaciA3n", emotion))
+
+emocion.df19 <- emocion.df18 %>%
+  select(dates, emotion, value) %>%
+  distinct() %>%
+  group_by(dates, emotion) %>%
+  mutate(value = sum(value)) %>%
+  distinct()
+
+
+
+
+ggplot(emocion.df18, aes(dates, value, color = emotion)) +
+  geom_smooth(size = 2, se = F) +
+  xlab("AAÅ}o") +
+  ylab("Frecuencia") + ggtitle("Emociones a lo Largo del Tiempo") + 
+  labs(color = "Emociones") +
+  theme_classic() + scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=18,face = "bold"),
+        title = element_text(size=20,face = "bold"),
+        legend.text = element_text(size = 18)) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-07-01"),
+                    y = 1.05, label = "Derrota en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-07-01"),
+                    y = 1.05, label = "Victoria en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-12-01"),
+                    y = 1.25, label = "Toma de Protesta") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-12-01"),
+                    y = 1.2, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-03-30"),
+                    y = .75, label = "Inicio CampaAÅ}a 2018") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-03-30"),
+                    y = .7, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-05-30"),
+                    y = .75, label = "Inicio CampaAÅ}a 2012") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-03-30"),
+                    y = .7, size = 2, shape = 20)
+
+
+
+ggplot(emocion.df2, aes(dates, (value), color = emotion)) +
+  geom_smooth(size = 2, se = F) +
+  xlab("AAÅ}o") +
+  ylab("Frecuencia") + ggtitle("Emociones a lo Largo del Tiempo") + 
+  labs(color = "Emociones") +
+  theme_classic() + scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=18,face = "bold"),
+        title = element_text(size=20,face = "bold"),
+        legend.text = element_text(size = 18)) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-07-01"),
+                    y = 1.05, label = "Derrota en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-07-01"),
+                    y = 1.05, label = "Victoria en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-12-01"),
+                    y = 1.25, label = "Toma de Protesta") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-12-01"),
+                    y = 1.2, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-03-30"),
+                    y = .75, label = "Inicio CampaAÅ}a 2018") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-03-30"),
+                    y = .7, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-05-30"),
+                    y = .75, label = "Inicio CampaAÅ}a 2012") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-03-30"),
+                    y = .7, size = 2, shape = 20)
+
+ggplot(emocion.df2) +
+  geom_smooth(aes(dates, negative, color = 'Negative'),size = 3, se = F) +
+  geom_smooth(aes(dates, positive, color = 'Positive'),size = 3, se = F) +
+  xlab("Year") +
+  ylab("Count") +
+  labs(color = "Polarization") +
+  theme_classic() + scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=18,face = "bold"),
+        title = element_text(size=20,face = "bold"),
+        legend.text = element_text(size = 18)) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-07-01"),
+                    y = 1.05, label = "Derrota en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-07-01"),
+                    y = 1.05, label = "Victoria en Elecciones") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-07-01"),
+                    y = 1, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-12-01"),
+                    y = 1.25, label = "Toma de Protesta") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-12-01"),
+                    y = 1.2, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2018-03-30"),
+                    y = .75, label = "Inicio CampaAÅ}a 2018") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2018-03-30"),
+                    y = .7, size = 2, shape = 20) +
+  ggplot2::annotate(geom = "text", x = as.Date("2012-04-20"),
+                    y = .75, label = "Inicio CampaAÅ}a 2012") + 
+  ggplot2::annotate(geom = "point", x = as.Date("2012-03-30"),
+                    y = .7, size = 2, shape = 20)
+
+
+
+
 
 
