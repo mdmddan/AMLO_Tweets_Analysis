@@ -12,24 +12,89 @@ library(readr)
 
 getwd()
 
+#code to download the tweets of the president using his user name to
+#identify them 
+#gt_amlo <- get_timeline("@lopezobrador_", n = 3200)
+
+# A Rda file is created
+
+#save(gt_amlo, file = "gt_amlo.Rda")
+
+load("gt_amlo.Rda")
+
+glimpse(gt_amlo)
+head(gt_amlo$text)
+summary(gt_amlo$created_at)
+
+names(gt_amlo)
+base_amlo <- gt_amlo %>% select(user_id, created_at, screen_name,
+                                text, source,display_text_width, 
+                                favorite_count, reply_count, 
+                                is_quote, is_retweet, urls_url,
+                                name, location, description, followers_count,
+                                friends_count, listed_count, statuses_count,
+                                favourites_count, account_created_at)
+base_amlo <- base_amlo %>%
+  mutate(anio = year(created_at), 
+         mes = month(created_at),
+         dia_mes = day(created_at), 
+         dia_semana = wday(created_at),
+         hour = hour(created_at),
+         date = date(created_at))
+base_amlo <- base_amlo  %>%
+  filter(date >= "2012-01-01")
+
+names(base_amlo)
+
+
+ggplot(base_amlo %>% group_by(date) %>%
+         summarise(n = n())) + geom_line(aes(date, n)) + 
+  ylab("Number of Tweets") + xlab("Date") +
+  ggtitle("Number of tweets per day") +
+  theme_base()
+
+
+#Cleaning the text of the tweets
+
+amlo_txt <- base_amlo$text
+
+amlo_txt <- gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", amlo_txt)
+head(amlo_txt)
+
+amlo_txt <- gsub("@\\w+", "", amlo_txt)
+
+head(amlo_txt)
+
+amlo_txt <-  gsub("\\bhttp[a-zA-Z0-9]*\\b", "", amlo_txt)
+
+head(amlo_txt)
+
+amlo_txt <- gsub("[[:punct:]]", "", amlo_txt)
+
+head(amlo_txt)
+
+amlo_txt <- gsub("amp ", "", amlo_txt)
+
+head(amlo_txt)
+
+amlo_txt <-  gsub("\\btco[a-zA-Z0-9]*\\b", "", amlo_txt)
+
+head(amlo_txt)
+
+amlo_txt <- amlo_txt[!is.na(amlo_txt)] 
+head(amlo_txt)
+
+amlo_txt <- gsub("[ \t]{2,}", "", amlo_txt)
+amlo_txt <- gsub("^\\s+|\\s+$", "", amlo_txt)
+head(amlo_txt, 5)
+
+amlo_txt <- tolower(amlo_txt)
+head(amlo_txt, 5)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#palabras comunes a eliminar
+stopwords(kind = "es")
 
 
 
