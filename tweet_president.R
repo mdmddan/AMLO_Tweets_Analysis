@@ -117,6 +117,22 @@ head(findFreqTerms(amlo_tdm, lowfreq=10), 40)
 wordcloud(amlo_corpus, random.order = FALSE, scale=c(5,.5), max.words=300, colors=brewer.pal(8, "Set1"))
 
 
+############################
+#Getting the sentiments from the tweets
 
+emocion.df <- get_nrc_sentiment(char_v = amlo_txt, language = "spanish")
+#transpose the dataframe for data transformation
+emocion.df3 <- data.frame(t(emocion.df))
+#Sum of the points per emotion in the tweets
+emocion.df3 <- data.frame(rowSums(emocion.df3))
+
+
+names(emocion.df3)[1] <- "Count"
+
+emocion.df3 <- bind_cols("Sentiment" = rownames(emocion.df3), emocion.df3)
+rownames(emocion.df3) <- NULL
+
+#Verification of the dataframe 
+print(emocion.df3)
 
 
