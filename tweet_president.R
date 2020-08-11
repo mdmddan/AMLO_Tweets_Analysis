@@ -91,9 +91,7 @@ head(amlo_txt, 5)
 amlo_txt <- tolower(amlo_txt)
 head(amlo_txt, 5)
 
-
-
-#palabras comunes a eliminar
+#Regexp to clean the text
 stopwords(kind = "es")
 
 
