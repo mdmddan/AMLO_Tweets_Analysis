@@ -9,6 +9,8 @@ library(tm)
 library(syuzhet)
 library(readxl)
 library(readr)
+library(wordcloud)
+
 
 getwd()
 
@@ -93,6 +95,35 @@ head(amlo_txt, 5)
 
 #Regexp to clean the text
 stopwords(kind = "es")
+
+#creation of a corpus for text mining and to eliminate common words
+amlo_corpus <- Corpus(VectorSource(amlo_txt))
+amlo_corpus <- tm_map(amlo_corpus, removeWords, stopwords(kind = "es"))
+
+#Document-Term Matrix 
+
+
+#Ahora podemos hacer un Document-Term Matrix (dtm) y un Term Document Matrix (tdm)
+amlo_tdm <- TermDocumentMatrix(amlo_corpus, control = list(stopwords = TRUE))
+amlo_tdm <- as.matrix(amlo_tdm)
+
+#Hacemos un dtm para ver cuantas veces aparecen las palabras en el documento.
+
+amlo_tdm <- DocumentTermMatrix(amlo_corpus, control = list(minWordLength = 1, stopwords = TRUE))
+inspect(amlo_tdm)
+
+amlo_corpus_stem <- tm_map(amlo_corpus, stemDocument)
+
+amlo_corpus_stem <- tm_map(amlo_corpus_stem, stemCompletion, dictionary = amlo_corpus)
+inspect(amlo_corpus_stem[1:5])
+
+head(findFreqTerms(amlo_tdm, lowfreq=10), 40)
+
+
+
+library(wordcloud)
+wordcloud(amlo_corpus, random.order = FALSE, scale=c(5,.5), max.words=300, colors=brewer.pal(8, "Set1"))
+
 
 
 
