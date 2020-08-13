@@ -192,8 +192,6 @@ table(emocion.df18$names)
 emocion.df18$dates <- as.Date(emocion.df18$dates)
 class(emocion.df18)
 
-emocion.df18 <- emocion.df18 %>%
-  mutate(emotion = ifelse(emotion == "expectativa", "anticipaciA3n", emotion))
 
 emocion.df19 <- emocion.df18 %>%
   select(dates, emotion, value) %>%
@@ -205,11 +203,11 @@ emocion.df19 <- emocion.df18 %>%
 
 
 
-ggplot(emocion.df18, aes(dates, value, color = emotion)) +
-  geom_smooth(size = 2, se = F) +
-  xlab("AAÅ}o") +
-  ylab("Frecuencia") + ggtitle("Emociones a lo Largo del Tiempo") + 
-  labs(color = "Emociones") +
+ggplot(emocion.df2, aes(dates, value, color = emotion)) +
+  geom_smooth(size = 3, se = F) +
+  xlab("Year") +
+  ylab("Frequency") +
+  labs(color = "Sentiment") +
   theme_classic() + scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text = element_text(size=14),
